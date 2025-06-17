@@ -62,6 +62,15 @@ node("docker-ubuntu20-xlarge") {
                 writeFile(file: '.jfrog/projects/go.yaml', text: yamlContent)
                 echo "Successfully created .jfrog/projects/go.yaml"
 
+                stage('Clone Source Repo') {
+                    dir("${cliWorkspace}") {
+                        sh "git clone ${devRepo}"
+                        dir("${repo}"){
+                            sh "git checkout ${devBranch}"
+                        }
+                    }
+                }
+
                 stage('Build JFrog CLI') {
                     sh 'go version'
                     dir("$jfrogCliRepoDir") {
@@ -72,15 +81,6 @@ node("docker-ubuntu20-xlarge") {
 
                     version = getCliVersion(builderPath)
                     print "CLI version: $version"
-                }
-
-                stage('Clone Source Repo') {
-                    dir("${cliWorkspace}") {
-                        sh "git clone ${devBranch}"
-                        dir("${repo}"){
-                            sh "git checkout ${devBranch}"
-                        }
-                    }
                 }
 
                 stage('jf build and upload binaries phase') {
