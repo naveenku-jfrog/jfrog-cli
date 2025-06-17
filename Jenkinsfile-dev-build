@@ -100,7 +100,7 @@ node("docker-ubuntu20-xlarge") {
      }
     finally {
         stage('Send Notifications') {
-            echo "finalStatus : ${finalStatus}"
+            echo "finalStatus : ${currentBuild.result}"
             def finalStatus = currentBuild.result ?: 'FAILURE'
             def message = ''
 
