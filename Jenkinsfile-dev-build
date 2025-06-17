@@ -100,12 +100,13 @@ node("docker-ubuntu20-xlarge") {
      }
     finally {
         stage('Send Notifications') {
+            echo "finalStatus : ${finalStatus}"
             def finalStatus = currentBuild.result ?: 'FAILURE'
             def message = ''
 
             if (finalStatus == 'SUCCESS') {
                 message = "Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.\n<${env.BUILD_URL}|View Build>"
-                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'danger')
+                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'good')
             } else {
                 message = """@here Dev Build Jenkins Pipeline has a problem.
                     *Status* : *${finalStatus}*.
