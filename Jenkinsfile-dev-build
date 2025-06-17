@@ -93,29 +93,27 @@ node("docker-ubuntu20-xlarge") {
             }
         }
     }
-    } finally {
-         unsuccessful {
-             script {
-                 def message = """@here Dev Build Jenkins Pipeline has failed.
-                     Status       : *${currentBuild.result}*.
-                     Failed stage : *${env.FAILURE_STAGE}*.
-                    """
-                 slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
-             }
-         }
-        success {
-            script {
-                 def message = """Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.
-                    """
-                 slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
-             }
-        }
-        unstable {
-            script {
-             def message = """Dev Build Jenkins Pipeline for Jfrog-CLI is Unstable.
-                """
-             slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
+    }catch (e) {
+         echo "ERROR: Pipeline failed with exception: ${e}"
+         currentBuild.result = 'FAILURE'
+         throw e
+     }
+    finally {
+        stage('Send Notifications') {
+            def finalStatus = currentBuild.result ?: 'FAILURE'
+            def message = ''
+
+            if (finalStatus == 'SUCCESS') {
+                message = "Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.\n<${env.BUILD_URL}|View Build>"
+                slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
+            } else {
+                message = """@here Dev Build Jenkins Pipeline has a problem.
+                    *Status* : *${finalStatus}*.
+                    *Build* : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>
+                   """
+                slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
             }
+            echo "Final notification message would be: \n${message}"
         }
     }
 }
