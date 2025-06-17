@@ -209,11 +209,11 @@ def uploadAndScanBuildInfo() {
     """
     }
 
-    stage('Scanning Build-Info') {
+    /*stage('Scanning Build-Info') {
     sh """#!/bin/bash
         $builderPath build-scan "${buildName}" "${buildNumber}" --project ${project}
     """
-    }
+    }*/
 }
 
 def build(goos, goarch, pkg, fileName) {
