@@ -1,6 +1,5 @@
 node("docker-ubuntu20-xlarge") {
     try {
-    def buildStatus = 'SUCCESS'
     stage('Setup Environment and Tools') {
         def goRoot = tool name: 'go-1.23.9', type: 'go'
         withEnv(["GOROOT=${goRoot}", "PATH+GO=${goRoot}/bin", "GO111MODULE=on"]) {
@@ -45,6 +44,7 @@ node("docker-ubuntu20-xlarge") {
                 sh "mkdir $builderDir"
                 builderPath = "${cliWorkspace}/${builderDir}${cliExecutableName}"
                 jfrogCliRepoDir = "${cliWorkspace}/${repo}/"
+                def buildStatus = 'SUCCESS'
 
                 buildNumber = env.BUILD_NUMBER
                 buildName = "jfrog-cli-dev-build"
@@ -101,9 +101,7 @@ node("docker-ubuntu20-xlarge") {
      }
     finally {
         stage('Send Notifications') {
-            def message = ''
-
-            if (${buildStatus} == 'SUCCESS') {
+            if (buildStatus == 'SUCCESS') {
                 message = "Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.\n<${env.BUILD_URL}|View Build>"
                 slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'good')
             } else {
@@ -111,7 +109,7 @@ node("docker-ubuntu20-xlarge") {
                     *Status* : *${buildStatus}*.
                     *Build* : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>
                    """
-                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'daner')
+                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'danger')
             }
             echo "Final notification message would be: \n${message}"
         }
