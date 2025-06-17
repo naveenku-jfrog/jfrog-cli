@@ -1,5 +1,6 @@
 node("docker-ubuntu20-xlarge") {
     try {
+    def buildStatus = 'SUCCESS'
     stage('Setup Environment and Tools') {
         def goRoot = tool name: 'go-1.23.9', type: 'go'
         withEnv(["GOROOT=${goRoot}", "PATH+GO=${goRoot}/bin", "GO111MODULE=on"]) {
@@ -112,7 +113,7 @@ node("docker-ubuntu20-xlarge") {
                     *Status* : *${finalStatus}*.
                     *Build* : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>
                    """
-                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'good')
+                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'daner')
             }
             echo "Final notification message would be: \n${message}"
         }
