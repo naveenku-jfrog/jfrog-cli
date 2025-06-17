@@ -8,7 +8,7 @@ node("docker-ubuntu20-xlarge") {
                 env.REPO_NAME_21 = "$repo21Name"
             }
             def architectures = [
-                 /*   [pkg: 'jfrog-cli-windows-amd64', goos: 'windows', goarch: 'amd64', fileExtension: '.exe', chocoImage: '${REPO_NAME_21}/jfrog-docker/linuturk/mono-choco'],
+                  /*  [pkg: 'jfrog-cli-windows-amd64', goos: 'windows', goarch: 'amd64', fileExtension: '.exe', chocoImage: '${REPO_NAME_21}/jfrog-docker/linuturk/mono-choco'],
                     [pkg: 'jfrog-cli-linux-386', goos: 'linux', goarch: '386', fileExtension: '', debianImage: '${REPO_NAME_21}/jfrog-docker/i386/ubuntu:20.04', debianArch: 'i386'],
                     [pkg: 'jfrog-cli-linux-amd64', goos: 'linux', goarch: 'amd64', fileExtension: '', debianImage: '${REPO_NAME_21}/jfrog-docker/ubuntu:20.04', debianArch: 'x86_64', rpmImage: 'almalinux:8.10'],
                     [pkg: 'jfrog-cli-linux-arm64', goos: 'linux', goarch: 'arm64', fileExtension: ''],
@@ -92,6 +92,31 @@ node("docker-ubuntu20-xlarge") {
             }
         }
     }
+    post {
+         unsuccessful {
+             script {
+                 def message = """@here Dev Build Jenkins Pipeline has failed.
+                     Status       : *${currentBuild.result}*.
+                     Failed stage : *${env.FAILURE_STAGE}*.
+                    """
+                 slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
+             }
+         }
+        success {
+            script {
+                 def message = """Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.
+                    """
+                 slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
+             }
+        }
+        unstable {
+            script {
+             def message = """Dev Build Jenkins Pipeline for Jfrog-CLI is Unstable.
+                """
+             slack.notifyChannel([name: "#jfrog-cli-dev-build-notifications.", message: message])
+            }
+        }
+    }
 }
 
 def getCLINextVersion(String currentVersion) {
@@ -165,7 +190,7 @@ def uploadCliBinary(architectures) {
 def uploadBinaryToJfrogRepo21(pkg, fileName) {
     sh """#!/bin/bash
         set -e
-        $builderPath rt u ${jfrogCliRepoDir}/${fileName} ecosys-dev-build-artifactory/dev/$identifier/$version/$pkg/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --flat
+        $builderPath rt u ${jfrogCliRepoDir}/${fileName} ecosys-dev-build-artifactory/dev/$identifier/$version/$pkg/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat
         echo Uploaded the binary here: ecosys-dev-build-artifactory/dev/$identifier/$version/$pkg/
     """
 }
