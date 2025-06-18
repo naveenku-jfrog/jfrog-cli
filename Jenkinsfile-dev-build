@@ -26,6 +26,7 @@ node("docker-ubuntu20-xlarge") {
 
             devBranch = "dev"
             devRepo = "https://github.com/jfrog/jfrog-cli.git"
+            buildStatus = 'SUCCESS'
 
             releaseVersion = ''
 
@@ -44,7 +45,6 @@ node("docker-ubuntu20-xlarge") {
                 sh "mkdir $builderDir"
                 builderPath = "${cliWorkspace}/${builderDir}${cliExecutableName}"
                 jfrogCliRepoDir = "${cliWorkspace}/${repo}/"
-                def buildStatus = 'SUCCESS'
 
                 buildNumber = env.BUILD_NUMBER
                 buildName = "jfrog-cli-dev-build"
