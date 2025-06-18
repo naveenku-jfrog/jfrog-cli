@@ -26,7 +26,7 @@ node("docker-ubuntu20-xlarge") {
 
             devBranch = "dev"
             devRepo = "https://github.com/jfrog/jfrog-cli.git"
-            buildStatus = 'FAILURE'
+            buildStatus = 'SUCCESS'
 
             repo = 'jfrog-cli'
 
@@ -73,9 +73,9 @@ node("docker-ubuntu20-xlarge") {
                     setJfConfigure()
                 }
 
-                /*stage('jf build and upload binaries phase') {
+                stage('jf build and upload binaries phase') {
                     buildAndUploadBinaryAndBuildInfo(architectures)
-                }*/
+                }
             }
         }
     }
