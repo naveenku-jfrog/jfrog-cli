@@ -26,12 +26,9 @@ node("docker-ubuntu20-xlarge") {
 
             devBranch = "dev"
             devRepo = "https://github.com/jfrog/jfrog-cli.git"
-            buildStatus = 'SUCCESS'
-
-            releaseVersion = ''
+            buildStatus = 'FAILURE'
 
             repo = 'jfrog-cli'
-            sh 'rm -rf temp'
             sh 'mkdir temp'
 
             env.CI = true
