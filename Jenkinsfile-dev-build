@@ -101,6 +101,8 @@ node("docker-ubuntu20-xlarge") {
      }
     finally {
         stage('Send Notifications') {
+            currDir = pwd()
+            sh "echo currDir=$currDir"
             if (buildStatus == 'SUCCESS') {
                 message = "Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.\n<${env.BUILD_URL}|View Build>"
                 slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'good')
