@@ -1,4 +1,9 @@
 node("docker-ubuntu20-xlarge") {
+    properties([
+        pipelineTriggers([
+            cron('H 0 * * *')
+        ])
+    ])
     try {
     stage('Setup Environment and Tools') {
         def goRoot = tool name: 'go-1.23.9', type: 'go'
@@ -42,9 +47,17 @@ node("docker-ubuntu20-xlarge") {
                 builderPath = "${cliWorkspace}/${builderDir}${cliExecutableName}"
                 jfrogCliRepoDir = "${cliWorkspace}/${repo}/"
 
+                repoDeployName = "ecosys-dev-build-artifactory"
+                repoResolveName = "ecosys-dev-build-artifactory"
+                repoDeployId = "repo21"
+                repoResolveId = "repo21"
+
+                artifactoryNameToUpload = "ecosys-dev-build-artifactory"
+                project = "ecosys"
+                slackChannelName = "jfrog-cli-dev-build-notifications"
+
                 buildNumber = env.BUILD_NUMBER
                 buildName = "jfrog-cli-dev-build"
-                project = "ecosys"
 
                 stage('Clone Source Repo') {
                     dir("${cliWorkspace}") {
@@ -66,9 +79,9 @@ node("docker-ubuntu20-xlarge") {
                     version = getCliVersion(builderPath)
                     print "CLI version: $version"
                     version = getCLINextVersion(version) + "-beta"
-                    print "Next CLI version: $version"
-
+                    print "Next CLI version: $version"\
                 }
+
                 stage('Setting JF-Config'){
                     setJfConfigure()
                 }
@@ -89,13 +102,13 @@ node("docker-ubuntu20-xlarge") {
             message = ''
             if (buildStatus == 'SUCCESS') {
                 message = "Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.\n<${env.BUILD_URL}|View Build>"
-                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'good')
+                slackSend(channel: "#${slackChannelName}", message: message, color: 'good')
             } else {
                 message = """@here Dev Build Jenkins Pipeline has a problem.
                     *Status* : *${buildStatus}*.
                     *Build* : <${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>
                    """
-                slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'danger')
+                slackSend(channel: "#${slackChannelName}", message: message, color: 'danger')
             }
             echo "Final notification message would be: \n${message}"
         }
@@ -104,7 +117,7 @@ node("docker-ubuntu20-xlarge") {
 
 def setJfConfigure(){
      sh """#!/bin/bash
-        $builderPath go-config --repo-deploy ecosys-dev-build-artifactory --repo-resolve ecosys-dev-build-artifactory --server-id-deploy repo21 --server-id-resolve repo21
+        $builderPath go-config --repo-deploy ${repoDeployName} --repo-resolve ${repoResolveName} --server-id-deploy ${repoDeployId} --server-id-resolve ${repoResolveId}
      """
 }
 
@@ -148,7 +161,6 @@ def buildAndUploadBinaryAndBuildInfo(architectures) {
     }
 }
 
-// Config Repo21 as default server.
 def configRepo21() {
     withCredentials([
         usernamePassword(credentialsId: 'repo21', usernameVariable: 'REPO21_USER', passwordVariable: 'REPO21_PASSWORD'),
@@ -179,8 +191,8 @@ def uploadCliBinary(architectures) {
 def uploadBinaryToJfrogRepo21(pkg, fileName) {
     sh """#!/bin/bash
         set -e
-        $builderPath rt u ${jfrogCliRepoDir}/${fileName} ecosys-dev-build-artifactory/dev/$identifier/$version/$pkg/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat
-        echo Uploaded the binary here: ecosys-dev-build-artifactory/dev/$identifier/$version/$pkg/
+        $builderPath rt u ${jfrogCliRepoDir}/${fileName} ${artifactoryNameToUpload}/dev/$identifier/$version/$pkg/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat
+        echo Uploaded the binary here: ${artifactoryNameToUpload}/dev/$identifier/$version/$pkg/
     """
 }
 
