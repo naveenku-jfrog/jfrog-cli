@@ -1,3 +1,4 @@
+import groovy.json.JsonBuilder
 node("docker-ubuntu20-xlarge") {
     properties([
         pipelineTriggers([
@@ -218,7 +219,8 @@ def uploadAndScanBuildInfo() {
     scanResult = readJSON(text: jsonOutput)
     scanStatusCode = scanResult?.scansStatus?.scaScanStatusCode
     if (scanStatusCode != null && scanStatusCode == 0) {
-        slackSend(channel: "#${slackChannelName}", message: scanResult, color: 'danger')
+        scanResultString = JsonBuilder(myObject).toPrettyString()
+        slackSend(channel: "#${slackChannelName}", message: scanResultString, color: 'danger')
       }
     }
 }
