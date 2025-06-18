@@ -219,7 +219,7 @@ def uploadAndScanBuildInfo() {
     scanResult = readJSON(text: jsonOutput)
     scanStatusCode = scanResult?.scansStatus?.scaScanStatusCode
     if (scanStatusCode != null && scanStatusCode == 0) {
-        scanResultString = JsonBuilder(myObject).toPrettyString()
+        scanResultString = JsonBuilder(scanResult).toPrettyString()
         slackSend(channel: "#${slackChannelName}", message: scanResultString, color: 'danger')
       }
     }
