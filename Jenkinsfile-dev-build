@@ -2,7 +2,7 @@ node("docker-ubuntu20-xlarge") {
     try {
     stage('Setup Environment and Tools') {
         def goRoot = tool name: 'go-1.23.9', type: 'go'
-        withEnv(["GOROOT=${goRoot}", "PATH+GO=${goRoot}/bin", "GO111MODULE=on"]) {
+        withEnv(["GOROOT=${goRoot}", "PATH+GO=${goRoot}/bin"]) {
             withCredentials([string(credentialsId: 'repo21-url', variable: 'REPO21_URL')]) {
                 echo "${REPO21_URL}"
                 def repo21Name = "${REPO21_URL}".substring(8, "${REPO21_URL}".length())
@@ -50,20 +50,6 @@ node("docker-ubuntu20-xlarge") {
                 buildName = "jfrog-cli-dev-build"
                 project = "ecosys"
 
-                def yamlContent = """
-                    version: 1
-                    type: go
-                    resolver:
-                        repo: ecosys-dev-build-artifactory
-                        serverId: repo21
-                    deployer:
-                        repo: ecosys-dev-build-artifactory
-                        serverId: repo21
-                """
-                sh 'mkdir -p .jfrog/projects'
-                writeFile(file: '.jfrog/projects/go.yaml', text: yamlContent)
-                echo "Successfully created .jfrog/projects/go.yaml"
-
                 stage('Clone Source Repo') {
                     dir("${cliWorkspace}") {
                         sh "git clone ${devRepo}"
@@ -73,7 +59,7 @@ node("docker-ubuntu20-xlarge") {
                     }
                 }
 
-                /*stage('Build JFrog CLI') {
+                stage('Build JFrog CLI') {
                     sh 'go version'
                     dir("$jfrogCliRepoDir") {
                         sh "build/build.sh $cliExecutableName"
@@ -87,8 +73,11 @@ node("docker-ubuntu20-xlarge") {
                     print "Next CLI version: $version"
 
                 }
+                stage('Setting JF-Config'){
+                    setJfConfigure()
+                }
 
-                stage('jf build and upload binaries phase') {
+                /*stage('jf build and upload binaries phase') {
                     buildAndUploadBinaryAndBuildInfo(architectures)
                 }*/
             }
@@ -101,8 +90,7 @@ node("docker-ubuntu20-xlarge") {
      }
     finally {
         stage('Send Notifications') {
-            currDir = pwd()
-            sh "echo currDir=$currDir"
+            message = ''
             if (buildStatus == 'SUCCESS') {
                 message = "Dev Build Jenkins Pipeline for Jfrog-CLI has successfully completed.\n<${env.BUILD_URL}|View Build>"
                 slackSend(channel: '#jfrog-cli-dev-build-notifications', message: message, color: 'good')
@@ -116,6 +104,12 @@ node("docker-ubuntu20-xlarge") {
             echo "Final notification message would be: \n${message}"
         }
     }
+}
+
+def setJfConfigure(){
+     sh """#!/bin/bash
+        $builderPath go-config --repo-deploy ecosys-dev-build-artifactory --repo-resolve ecosys-dev-build-artifactory --server-id-deploy repo21 --server-id-resolve repo21
+     """
 }
 
 def getCLINextVersion(String currentVersion) {
