@@ -142,6 +142,13 @@ def notifyFailure(String stageName, error) {
 def setJfConfigure() {
     sh """#!/bin/bash
         echo ${repoResolveId} ${repoDeployId}
+        echo "Resolve repository will be: ${repoResolveId}"
+        echo "Deploy repository will be:  ${repoDeployId}"
+        echo "repoDeployName repository will be: ${repoDeployName}"
+        echo "repoResolveName repository will be:  ${repoResolveName}"
+        echo "artifactoryNameToUpload repository will be: ${artifactoryNameToUpload}"
+        echo "project will be:  ${project}"
+        echo "slackChannelName will be:  ${slackChannelName}"
         $builderPath go-config --repo-deploy ${repoDeployName} --repo-resolve ${repoResolveName} --server-id-deploy ${repoDeployId} --server-id-resolve ${repoResolveId}
      """
 }
