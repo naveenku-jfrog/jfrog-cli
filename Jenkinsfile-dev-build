@@ -57,6 +57,7 @@ node("docker-ubuntu20-xlarge") {
                                 sh "git clone ${devRepo}"
                                 dir("${repo}") {
                                     sh "git checkout ${devBranch}"
+                                    sh "echo Repo_URL is : ${repo_url}"
                                 }
                             }
                         }
@@ -150,7 +151,6 @@ def setJfConfigure() {
         echo "artifactoryNameToUpload repository will be: ${artifactoryNameToUpload}"
         echo "project will be:  ${project}"
         echo "slackChannelName will be:  ${slackChannelName}"
-        echo "Repo_URL is : ${repo_url}"
         $builderPath go-config --repo-deploy ${repoDeployName} --repo-resolve ${repoResolveName} --server-id-deploy ${repoDeployId} --server-id-resolve ${repoResolveId}
      """
 }
