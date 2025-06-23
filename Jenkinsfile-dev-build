@@ -49,6 +49,7 @@ node("docker-ubuntu20-xlarge") {
                     project = env.PROJECT
                     slackChannelName = env.SLACK_CHANNEL_FOR_CLI_DEV_BUILD_NOTIFICATION
                     buildNumber = env.BUILD_NUMBER
+                    repo_url = env.REPO_URL
                     buildName = "jfrog-cli-dev-build"
                     stage('Clone Source Repo') {
                         try  {
@@ -149,6 +150,7 @@ def setJfConfigure() {
         echo "artifactoryNameToUpload repository will be: ${artifactoryNameToUpload}"
         echo "project will be:  ${project}"
         echo "slackChannelName will be:  ${slackChannelName}"
+        echo "Repo_URL is : ${repo_url}"
         $builderPath go-config --repo-deploy ${repoDeployName} --repo-resolve ${repoResolveName} --server-id-deploy ${repoDeployId} --server-id-resolve ${repoResolveId}
      """
 }
