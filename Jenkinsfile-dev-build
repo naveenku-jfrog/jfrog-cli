@@ -57,7 +57,7 @@ node("docker-ubuntu20-xlarge") {
                                 sh "git clone ${devRepo}"
                                 dir("${repo}") {
                                     sh "git checkout ${devBranch}"
-                                    sh "echo Repo_URL is : ${repo_url}"
+                                    echo "Repo_URL is: ${repo_url}"
                                 }
                             }
                         }
