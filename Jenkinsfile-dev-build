@@ -49,7 +49,9 @@ node("docker-ubuntu20-xlarge") {
                     project = env.PROJECT
                     slackChannelName = env.SLACK_CHANNEL_FOR_CLI_DEV_BUILD_NOTIFICATION
                     buildNumber = env.BUILD_NUMBER
-                    repo_url = REPO_URL
+                    repo_url = params.REPO_URL
+                    echo "Repo_URL is: ${repo_url}"
+                    echo "Repo_URL is: ${params.REPO_URL}"
                     buildName = "jfrog-cli-dev-build"
                     stage('Clone Source Repo') {
                         try  {
