@@ -297,7 +297,7 @@ def build(goos, goarch, pkg, fileName) {
         sh "pwd"
         env.GOOS = "$goos"
         env.GOARCH = "$goarch"
-        sh "build/build.sh /binaries/${pkg}/$fileName"
+        sh "build/build.sh ./binaries/${pkg}/$fileName"
         sh "ls -la"
     }
 }
