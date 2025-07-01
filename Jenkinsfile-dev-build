@@ -272,9 +272,9 @@ def build(goos, goarch, pkg, fileName) {
             echo "Zipping the output..."
             zip(
                 zipFile: zipName,
-                glob: './binaries/${pkg}/$fileName'
+                glob: "./binaries/${pkg}/$fileName"
             )
-            sh "$builderPath rt u ${zipName} ${jfrogCLITargetRepoName}/dev/zipped --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat"
+            sh "$builderPath rt u ${zipName} ${jfrogCLITargetRepoName}/dev/zipped/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat"
             sh "mv ${zipName} ${zippedBinariesDir}"
         }
     }
