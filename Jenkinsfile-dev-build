@@ -272,7 +272,7 @@ def build(goos, goarch, pkg, fileName) {
                 zipFile: zipName,
                 dir: sourceDirToZip
             )
-            mv ${zipName} "./zippedBinaries"
+            sh "mv ${zipName} './zippedBinaries'"
             echo "Archive created: ${zipName}. Listing contents..."
             sh "ls -la"
         }
