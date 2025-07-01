@@ -43,7 +43,6 @@ node("docker-ubuntu20-xlarge") {
                     builderPath = "${cliWorkspace}/${builderDir}${cliExecutableName}"
                     jfrogCliRepoDir = "${cliWorkspace}/${repo}/"
                     zippedBinariesDir = "${jfrogCliRepoDir}zippedBinaries/"
-                    sh "mkdir -p '${zippedBinariesDir}'"
                     rtDeployRepoName = "ecosys-dev-build-artifactory"
                     rtResolveRepoName = "ecosys-dev-build-artifactory"
                     repoDeployServerId = "repo21"
@@ -165,6 +164,7 @@ def getCliVersion(exePath) {
 def buildAndUploadBinaryAndBuildInfo(architectures) {
     configRepo21()
     try {
+        sh "mkdir -p '${zippedBinariesDir}'"
         makeBuildInfo()
         uploadCliBinary(architectures)
         uploadAndScanBuildInfo()
