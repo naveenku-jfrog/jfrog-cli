@@ -245,7 +245,7 @@ def uploadAndScanBuildInfo() {
     try  {
         stage("Scanning Binaries under watch ecosystem-watch"){
             dir("${jfrogCliRepoDir}/zippedBinaries") {
-                sh "'${builderPath}' scan '**/*.zip' --regexp=true --watches 'ecosystem-watch'"
+                sh "'${builderPath}' scan '**/*.zip' --ant=true --watches 'ecosystem-watch'"
             }
         }
      }
