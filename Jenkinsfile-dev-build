@@ -74,6 +74,7 @@ node("docker-ubuntu20-xlarge") {
                                 sh "build/build.sh $cliExecutableName"
                             }
                             sh "mv $jfrogCliRepoDir/$cliExecutableName $builderDir"
+                            sh "mkdir -p '${zippedBinariesDir}'"
                             version = getCliVersion(builderPath)
                             print "CLI version: $version"
                             version = getCLINextVersion(version) + "-beta"
