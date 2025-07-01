@@ -274,7 +274,7 @@ def build(goos, goarch, pkg, fileName) {
             sh "ls -la binaries/${pkg}/$fileName"
             zip(
                 zipFile: zipName,
-                glob: "binaries/${pkg}/$fileName"
+                dir: "binaries/${pkg}/"
             )
             sh "$builderPath rt u ${zipName} ${jfrogCLITargetRepoName}/dev/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat"
             sh "mv ${zipName} ${zippedBinariesDir}"
