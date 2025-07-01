@@ -248,10 +248,10 @@ def uploadAndScanBuildInfo() {
                 sh "'${builderPath}' scan '**/*.zip' --regexp=true --watches 'ecosystem-watch'"
             }
         }
-        catch (e) {
-            notifyFailure('Scanning Binaries and artifacts under watch ecosystem-watch', e)
-            throw e
-        }
+     }
+    catch (e) {
+        notifyFailure('Scanning Binaries and artifacts under watch ecosystem-watch', e)
+        throw e
     }
 }
 
