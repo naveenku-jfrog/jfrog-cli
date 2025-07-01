@@ -248,8 +248,9 @@ def uploadAndScanBuildInfo() {
             sh """#!/bin/bash
                 pwd
                 ls -la
-                regex_pattern='(.*\\.zip$)'
-                $builderPath scan ${regex_pattern} --regexp=true --watches 'ecosystem-watch'
+                regex_pattern='.*\\.zip$'
+                source_pattern="(${REGEX_PATTERN})"
+                $builderPath scan ${source_pattern} --regexp=true --watches 'ecosystem-watch'
             """
             }
         }
