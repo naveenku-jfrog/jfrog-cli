@@ -50,6 +50,7 @@ node("docker-ubuntu20-xlarge") {
                     jfrogCLITargetRepoName = "ecosys-dev-build-artifactory"
                     project = "ecosys"
                     slackChannelName = "jfrog-cli-dev-build-notifications"
+                    watchName = "ecosystem-watch"
                     buildNumber = env.BUILD_NUMBER
                     buildName = "jfrog-cli-dev-build"
                     stage('Clone Source Repo') {
@@ -245,14 +246,14 @@ def uploadAndScanBuildInfo() {
         throw e
     }*/
     try  {
-        stage("Scanning Binaries under watch ecosystem-watch"){
+        stage("Scanning Binaries under watch ${watchName}"){
             dir("${zippedBinariesDir}"){
-                sh "'${builderPath}' scan '**/*.zip' --ant=true --watches 'ecosystem-watch'"
+                sh "'${builderPath}' scan '**/*.zip' --ant=true --watches ${watchName}"
             }
         }
      }
     catch (e) {
-        notifyFailure('Scanning Binaries under watch ecosystem-watch', e)
+        notifyFailure('Scanning Binaries under watch ${watchName}', e)
         throw e
     }
 }
