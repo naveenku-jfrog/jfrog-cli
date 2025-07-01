@@ -248,7 +248,7 @@ def uploadAndScanBuildInfo() {
         stage("Scanning Binaries under watch ecosystem-watch"){
             sh "echo $zippedBinariesDir"
             sh "ls -la '${zippedBinariesDir}'"
-            sh "'${builderPath}' scan '(${zippedBinariesDir}/**/*.zip)' --ant=true --watches 'ecosystem-watch'"
+            sh "'${builderPath}' scan '(${zippedBinariesDir}**/*.zip)' --ant=true --watches 'ecosystem-watch'"
         }
      }
     catch (e) {
