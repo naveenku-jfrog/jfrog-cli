@@ -262,7 +262,7 @@ def build(goos, goarch, pkg, fileName) {
 
             withEnv(["GOOS=${goos}", "GOARCH=${goarch}"]) {
                 echo "Building for OS: ${goos}, Arch: ${goarch}"
-                sh "./build/build.sh ${fileName}"
+                sh "./build/build.sh ./binaries/${pkg}/$fileName"
             }
 
             echo "Zipping the output..."
