@@ -255,12 +255,22 @@ def uploadAndScanBuildInfo() {
 }
 
 def build(goos, goarch, pkg, fileName) {
-    dir("${jfrogCliRepoDir}") {
-        sh "pwd"
-        env.GOOS = "$goos"
-        env.GOARCH = "$goarch"
-        sh "build/build.sh ./binaries/${pkg}/$fileName"
-        sh "zip -r ${pkg}${fileName}.zip ./binaries/${pkg}/"
+    script {
+        def zipName = "${pkg}.zip"
+        def sourceDirToZip = "./binaries/${pkg}/"
+
+        withEnv(["GOOS=${goos}", "GOARCH=${goarch}"]) {
+            echo "Building for OS: ${goos}, Arch: ${goarch}"
+            sh "./build/build.sh ${fileName}"
+        }
+
+        echo "Zipping the output..."
+        zip(
+            zipFile: zipName,
+            dir: sourceDirToZip
+        )
+
+        echo "Archive created: ${zipName}. Listing contents..."
         sh "ls -la"
     }
 }
