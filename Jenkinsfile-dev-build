@@ -42,7 +42,7 @@ node("docker-ubuntu20-xlarge") {
                     sh "mkdir $builderDir"
                     builderPath = "${cliWorkspace}/${builderDir}${cliExecutableName}"
                     jfrogCliRepoDir = "${cliWorkspace}/${repo}/"
-                    zippedBinariesDir = ${jfrogCliRepoDir}/zippedBinaries
+                    zippedBinariesDir = "${jfrogCliRepoDir}/zippedBinaries"
                     rtDeployRepoName = "ecosys-dev-build-artifactory"
                     rtResolveRepoName = "ecosys-dev-build-artifactory"
                     repoDeployServerId = "repo21"
