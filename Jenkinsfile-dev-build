@@ -246,7 +246,7 @@ def uploadAndScanBuildInfo() {
         sh """#!/bin/bash
             pwd
             ls -la ${jfrogCliRepoDir}/binaries/
-            $builderPath scan '${jfrogCliRepoDir}/binaries/' --watches 'ecosystem-watch'
+            $builderPath scan '${jfrogCliRepoDir}/zippedBinaries/' --watches 'ecosystem-watch'
         """
         }
     }
@@ -272,6 +272,7 @@ def build(goos, goarch, pkg, fileName) {
                 zipFile: zipName,
                 dir: sourceDirToZip
             )
+            mv zipFile ./zippedBinaries
             echo "Archive created: ${zipName}. Listing contents..."
             sh "ls -la"
         }
