@@ -245,13 +245,7 @@ def uploadAndScanBuildInfo() {
     try  {
         dir("${jfrogCliRepoDir}/zippedBinaries"){
             stage("Scanning Binaries under watch ecosystem-watch") {
-            sh """#!/bin/bash
-                pwd
-                ls -la
-                regex_pattern='.*\\.zip$'
-                source_pattern="(${REGEX_PATTERN})"
-                $builderPath scan ${source_pattern} --regexp=true --watches 'ecosystem-watch'
-            """
+            sh "$builderPath scan "(.*\\.zip$)" --regexp=true --watches 'ecosystem-watch'"
             }
         }
         catch (e) {
