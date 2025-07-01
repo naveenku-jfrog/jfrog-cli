@@ -31,6 +31,8 @@ node("docker-ubuntu20-xlarge") {
                 devRepo = "https://github.com/jfrog/jfrog-cli.git"
                 buildStatus = 'SUCCESS'
                 repo = 'jfrog-cli'
+                now = new Date()
+                formattedDate = now.format('yyyy-MM-dd')
                 env.CI = true
                 env.JFROG_CLI_LOG_LEVEL = "DEBUG"
                 dir('temp') {
@@ -207,8 +209,8 @@ def uploadCliBinary(architectures) {
 def uploadBinaryToJfrogRepo21(pkg, fileName) {
     sh """#!/bin/bash
         set -e
-        $builderPath rt u ${jfrogCliRepoDir}/binaries/${pkg}/${fileName} ${jfrogCLITargetRepoName}/dev/$identifier/$version/$pkg/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat
-        echo Uploaded the binary here: ${jfrogCLITargetRepoName}/dev/$identifier/$version/$pkg/
+        $builderPath rt u ${jfrogCliRepoDir}/binaries/${pkg}/${fileName} ${jfrogCLITargetRepoName}/dev/${formattedDate}/$identifier/$version/$pkg/ --build-name=${buildName} --build-number=${buildNumber} --project=${project} --fail-no-op --flat
+        echo Uploaded the binary here: ${jfrogCLITargetRepoName}/dev/${formattedDate}/$identifier/$version/$pkg/
     """
 }
 
