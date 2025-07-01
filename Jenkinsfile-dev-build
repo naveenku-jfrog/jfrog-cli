@@ -275,7 +275,7 @@ def build(goos, goarch, pkg, fileName) {
                 dir: sourceDirToZip
             )
             unzip(zipFile: zipName,
-            dir: ".tempZipped/"
+            dir: "tempZipped/"
             )
             sh "ls -la ./tempZipped"
             sh "mv ${zipName} ${zippedBinariesDir}"
