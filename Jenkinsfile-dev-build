@@ -164,7 +164,7 @@ def buildAndUploadBinaryAndBuildInfo(architectures) {
     try {
         makeBuildInfo()
         uploadCliBinary(architectures)
-        //uploadAndScanBuildInfo()
+        uploadAndScanBuildInfo()
     } finally {
         cleanupRepo21()
     }
@@ -220,7 +220,7 @@ def makeBuildInfo() {
 }
 
 def uploadAndScanBuildInfo() {
-    try  {
+    /*try  {
         stage('Upload Build-Info') {
             sh """#!/bin/bash
             $builderPath rt build-publish "${buildName}" "${buildNumber}" --project=${project}
@@ -240,11 +240,13 @@ def uploadAndScanBuildInfo() {
     catch (e) {
         notifyFailure('Scanning Build-Info', e)
         throw e
-    }
+    }*/
     try  {
         stage("Scanning Binaries under watch ecosystem-watch") {
         sh """#!/bin/bash
             $builderPath scan '${jfrogCliRepoDir}/binaries/' --watches 'ecosystem-watch'
+            ls -la
+            echo $architectures
         """
         }
     }
@@ -270,7 +272,6 @@ def build(goos, goarch, pkg, fileName) {
                 zipFile: zipName,
                 dir: sourceDirToZip
             )
-
             echo "Archive created: ${zipName}. Listing contents..."
             sh "ls -la"
         }
