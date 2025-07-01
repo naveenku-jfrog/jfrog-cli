@@ -43,6 +43,7 @@ node("docker-ubuntu20-xlarge") {
                     builderPath = "${cliWorkspace}/${builderDir}${cliExecutableName}"
                     jfrogCliRepoDir = "${cliWorkspace}/${repo}/"
                     zippedBinariesDir = "${jfrogCliRepoDir}/zippedBinaries"
+                    sh "echo zippedBinariesDir=$zippedBinariesDir"
                     rtDeployRepoName = "ecosys-dev-build-artifactory"
                     rtResolveRepoName = "ecosys-dev-build-artifactory"
                     repoDeployServerId = "repo21"
@@ -245,6 +246,8 @@ def uploadAndScanBuildInfo() {
     }*/
     try  {
         stage("Scanning Binaries under watch ecosystem-watch"){
+            sh "echo $zippedBinariesDir"
+            sh "ls -la '${zippedBinariesDir}'"
             sh "'${builderPath}' scan '(${zippedBinariesDir}/**/*.zip)' --ant=true --watches 'ecosystem-watch'"
         }
      }
@@ -270,9 +273,10 @@ def build(goos, goarch, pkg, fileName) {
                 zipFile: zipName,
                 dir: sourceDirToZip
             )
+            sh "ls -la '${zippedBinariesDir}'"
             sh "mv ${zipName} ${zippedBinariesDir}"
             echo "Archive created: ${zipName}. Listing contents..."
-            sh "ls -la"
+            sh "ls -la '${zippedBinariesDir}'"
         }
     }
 }
