@@ -244,9 +244,9 @@ def uploadAndScanBuildInfo() {
     try  {
         stage("Scanning Binaries under watch ecosystem-watch") {
         sh """#!/bin/bash
-            $builderPath scan '${jfrogCliRepoDir}/binaries/' --watches 'ecosystem-watch'
+            pwd
             ls -la
-            echo $architectures
+            $builderPath scan '${jfrogCliRepoDir}/binaries/' --watches 'ecosystem-watch'
         """
         }
     }
