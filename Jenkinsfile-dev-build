@@ -260,7 +260,7 @@ def build(goos, goarch, pkg, fileName) {
         env.GOOS = "$goos"
         env.GOARCH = "$goarch"
         sh "build/build.sh ./binaries/${pkg}/$fileName"
-        sh "zip(zipFile: '${pkg}${fileName}', dir: './binaries/${pkg}/')"
+        sh "zip -r ${pkg}${fileName}.zip ./binaries/${pkg}/"
         sh "ls -la"
     }
 }
