@@ -31,8 +31,7 @@ node("docker-ubuntu20-xlarge") {
                 devRepo = "https://github.com/jfrog/jfrog-cli.git"
                 buildStatus = 'SUCCESS'
                 repo = 'jfrog-cli'
-                now = new Date()
-                formattedDate = now.format('yyyy-MM-dd')
+                formattedDate = new Date().format('yyyy-MM-dd')
                 env.CI = true
                 env.JFROG_CLI_LOG_LEVEL = "DEBUG"
                 dir('temp') {
@@ -247,8 +246,8 @@ def uploadAndScanBuildInfo() {
         stage("Scanning Binaries under watch ecosystem-watch") {
         sh """#!/bin/bash
             pwd
-            ls -la ${jfrogCliRepoDir}/binaries/
-            $builderPath scan '${jfrogCliRepoDir}/zippedBinaries/' --watches 'ecosystem-watch'
+            ls -la ${jfrogCliRepoDir}/zippedBinaries/
+            $builderPath scan "(${jfrogCliRepoDir}/zippedBinaries/.*\\.zip$)" --regexp=true --watches 'ecosystem-watch'
         """
         }
     }
